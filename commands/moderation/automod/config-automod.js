@@ -360,33 +360,27 @@ module.exports = {
           break;
 
         case "link-ignore-role":
-          await i.deferReply({ ephemeral: true });
-          const linkIgnoreRoleCollector =
-            interaction.channel.createMessageCollector({
-              time: 60_000,
-              filter: collectorFilter,
-            });
-          linkIgnoreRoleCollector.on("collect", async (message) => {
-            await i.editReply(`Enter the target role **Id** in chat`);
+          await i.deferReply({ ephemeral: true })
+          const LinkIgnoreRoleCollector = interaction.channel.createMessageCollector({
+            time: 60_000
+          })
+          LinkIgnoreRoleCollector.on('collect', async (message) => {
+            await i.editReply(`Enter the target role **id** in chat`)
             const ignoreRoleId = message.content;
-            linkIgnoreRoleCollector.stop();
-            const targetIgnoreRole =
-              interaction.guild.roles.cache.get(ignoreRoleId);
-            if (!targetIgnoreRole) {
-              return await i.followUp(`Please Enter A Valid Role`);
-            }
-            await linkIgnoreConfig
-              .updateMany({
-                guildId: interaction.guild.id,
-                ignoreRoleId: ignoreRoleId,
+            LinkIgnoreRoleCollector.stop()
+            const ignoreRole = interaction.guild.roles.cache.get(ignoreRoleId)
+            if (!ignoreRole) return await i.followUp(`Enter a valid role id`)
+            await antiLinkConfig.updateMany({ guildId: interaction.guild.id, ignoreRoleId: ignoreRoleId }).catch(err => {
+              return i.followUp({
+                content: "DB Error, Try again later", 
+                ephemeral: true
               })
-              .catch(async (err) => {
-                return await i.followUp(`DB Error, Try again later`);
-              });
-            await i.followUp(
-              `${targetIgnoreRole} of Id **${ignoreRoleId}** Has been added as link ignored role`
-            );
-          });
+            })
+            await i.followUp({
+              content: `Updated ignored role ${ignoreRole}`,
+              ephemeral: true
+            })
+          })
           break;
 
         case "link-punishment":

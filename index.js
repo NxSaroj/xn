@@ -20,7 +20,7 @@ const client = new Client({
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildWebhooks,
     GatewayIntentBits.GuildVoiceStates,
-  ]
+  ], 
 })
 
 new CommandKit({
@@ -51,8 +51,6 @@ const searchEvents = (eventPath) => {
       client.on(event.name, (...args) => event.execute(...args, client));
     }
   });
-
-  
 
   const subDirectories = fs
     .readdirSync(eventPath)

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const infoButtons = require('../../models/utilities/info-buttons')
-const axios = require('axios')
+const infoButtons = require('../../models/utilities/info-buttons');
+const { default: axios } = require('axios');
 require('dotenv').config()
 
 module.exports = {
