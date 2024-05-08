@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const tagConfig = new Schema({
     tagName: {
-        type: [String],
+        type: String,
         required: true
     }, 
 
