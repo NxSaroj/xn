@@ -23,6 +23,12 @@ module.exports = {
    * @param {import('commandkit').SlashCommandProps} param0
    */
   run: async ({ interaction }) => {
+    if (!interaction.guild.members.me.permissions.has('ManageRoles')) {
+      return await interaction.reply({
+          content: `> I need manage roles permissions to execute this command`
+      })
+  }
+  
     if (
       !interaction.member.permissions.has(PermissionsBitField.Flags.ManageRoles)
     ) {

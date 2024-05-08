@@ -6,7 +6,18 @@ module.exports = {
     .addRoleOption((option)=>option.setName('role').setDescription('The role to be added').setRequired(true))
     .addUserOption((option)=>option.setName('user').setDescription('The user to add the role').setRequired(true))
     .setDMPermission(false),
+    /**
+     * 
+     * @param {import('commandkit').SlashCommandProps} param0 
+     * @returns 
+     */
     run: async ({ interaction }) => {
+
+        if (!interaction.guild.members.me.permissions.has('ManageRoles')) {
+            return await interaction.reply({
+                content: `> I need manage roles permissions to execute this command`
+            })
+        }
 
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
             return await interaction.editReply({
@@ -14,6 +25,7 @@ module.exports = {
                 ephemeral: true
             });
         }
+
 
         const targetRole = interaction.options.getRole('role')
         const user = interaction.options.getMember('user')

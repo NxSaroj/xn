@@ -27,6 +27,11 @@ module.exports = {
         dm_permission: false,
     },
     run: async ({ interaction }) => {
+        if (!interaction.guild.members.me.permissions.has('ManageRoles')) {
+            return await interaction.reply({
+                content: `> I need manage roles permissions to execute this command`
+            })
+        }
         
     const targetRole = interaction.options.getRole('role')
     const duration = interaction.options.getString('duration')

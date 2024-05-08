@@ -10,6 +10,7 @@ const {
 } = require("../../../utilities/select-menu/censorWordMenu");
 const { antiLinksRow } = require("../../../utilities/select-menu/antiLinkMenu");
 const { row } = require("../../../utilities/select-menu/autoModMenu");
+const { emojis } = require("../../../utilities/json/config.json");
 const {
   linkPunishmentRow,
 } = require("../../../utilities/select-menu/linkPunishmentMenu");
@@ -20,7 +21,7 @@ const {
 /** Importing Schema */
 const antiLinkConfig = require("../../../models/moderation/automod/antiLinkConfig");
 const censorConfig = require("../../../models/moderation/automod/censorConfig");
-const linkIgnoreConfig = require("../../../models/moderation/automod/linkIgnoreConfig");
+const ignoreConfig = require("../../../models/moderation/automod/ignoreConfig");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -33,6 +34,13 @@ module.exports = {
    * @returns
    */
   run: async ({ interaction }) => {
+
+    if (!interaction.guild.members.me.permissions.has("Administrator")) {
+      return await interaction.reply({
+        content: "I need `Administrator` permissions to execute this command"
+      })
+    }
+
     if (!interaction.memberPermissions.has("Administrator")) {
       return await interaction.reply({
         content: "You need `Adminstrator` permissions to execute this command",
@@ -71,7 +79,7 @@ module.exports = {
         `**Configure the automod** \n\n > **Link Filter** <:xn_arrow:1207610123778920448> ${linkFilterEnabled} \n > **Censor Filter** <:xn_arrow:1207610123778920448> ${censorEnabled}`
       )
       .setColor("White")
-      .setThumbnail(guild.iconURL({}));
+      .setThumbnail(guild.iconURL());
 
     const antiLinkEmbed = new EmbedBuilder()
       .setAuthor({
@@ -80,9 +88,40 @@ module.exports = {
           size: 256,
         }),
       })
-      .setDescription(
-        `**Enabled**  <:xn_arrow:1207610123778920448> ${linkFilterEnabled}`
+      .addFields(
+        {
+          name: "Enabled",
+          value: linkFilterEnabled,
+        },
+        {
+          name: "Threshold",
+          value: `${isLinkFilterEnabled?.linkThreshold || "`Not Enabled`"}`,
+        },
+        {
+          name: "Punishment",
+          value: `${isLinkFilterEnabled?.punishMent || "`Not Enabled`"}`,
+        }
       )
+      .setColor("White")
+      .setThumbnail(interaction.guild.iconURL());
+
+    const censorEmbed = new EmbedBuilder()
+      .setTitle(`Censor Menu`)
+      .addFields(
+        {
+          name: "Enabled",
+          value: censorEnabled,
+        },
+        {
+          name: "Threshold",
+          value: `${isCensorEnabled?.censorThreshold || "`Not Enabled`"}`,
+        },
+        {
+          name: "Punishment",
+          value: `${isCensorEnabled?.censorPunishment || "`Not Enabled`"}`,
+        }
+      )
+      .setThumbnail(interaction.guild.iconURL())
       .setColor("White");
 
     const response = await interaction.reply({
@@ -101,13 +140,9 @@ module.exports = {
     collector.on("collect", async (i) => {
       switch (i.values[0]) {
         case "anti-link":
-          await response.edit({
+          await i.update({
             embeds: [antiLinkEmbed],
             components: [antiLinksRow],
-          });
-          await i.reply({
-            content: "Changed to link filter module",
-            ephemeral: true,
           });
           break;
         case "whitelist-links":
@@ -360,38 +395,44 @@ module.exports = {
           break;
 
         case "link-ignore-role":
-          await i.deferReply({ ephemeral: true })
-          const LinkIgnoreRoleCollector = interaction.channel.createMessageCollector({
-            time: 60_000
-          })
-          LinkIgnoreRoleCollector.on('collect', async (message) => {
-            await i.editReply(`Enter the target role **id** in chat`)
+          await i.deferReply({ ephemeral: true });
+          const LinkIgnoreRoleCollector =
+            interaction.channel.createMessageCollector({
+              time: 60_000,
+            });
+          LinkIgnoreRoleCollector.on("collect", async (message) => {
+            await i.editReply(`Enter the target role **id** in chat`);
             const ignoreRoleId = message.content;
-            LinkIgnoreRoleCollector.stop()
-            const ignoreRole = interaction.guild.roles.cache.get(ignoreRoleId)
-            if (!ignoreRole) return await i.followUp(`Enter a valid role id`)
-            await antiLinkConfig.updateMany({ guildId: interaction.guild.id, ignoreRoleId: ignoreRoleId }).catch(err => {
-              return i.followUp({
-                content: "DB Error, Try again later", 
-                ephemeral: true
+            LinkIgnoreRoleCollector.stop();
+            const ignoreRole = interaction.guild.roles.cache.get(ignoreRoleId);
+            if (!ignoreRole)
+              return await i.followUp({
+                content: `Enter a valid role id`,
+                epehemeral: true,
+              });
+            await ignoreConfig
+              .create({
+                guildId: interaction.guild.id,
+                linkIgnoreRoleId: ignoreRoleId,
               })
-            })
+              .catch((err) => {
+                return i.followUp({
+                  content: "DB Error, Try again later",
+                  ephemeral: true,
+                });
+              });
             await i.followUp({
               content: `Updated ignored role ${ignoreRole}`,
-              ephemeral: true
-            })
-          })
+              ephemeral: true,
+            });
+          });
           break;
 
         case "link-punishment":
-          await response.edit({
+          await i.update({
             embeds: [],
             content: "Configure Anti-Link Punishment",
             components: [linkPunishmentRow],
-          });
-          await i.reply({
-            content: "Changed to link punishment module",
-            ephemeral: true,
           });
           break;
 
@@ -405,10 +446,10 @@ module.exports = {
               content: "Plese add one white-list link to continue",
             });
           }
-          await antiLinkConfig.updateMany({
-            guildId: interaction.guildId,
-            punishMent: "Timeout",
-          });
+          await antiLinkConfig.findOneAndUpdate(
+            { guildId: interaction.guildId },
+            { punishMent: "Timeout" }
+          )
           await i.editReply(`Changed censor link to **Timeout**`);
           break;
 
@@ -422,10 +463,10 @@ module.exports = {
               content: "Plese add one white-list link to continue",
             });
           }
-          await antiLinkConfig.updateMany({
-            guildId: interaction.guildId,
-            punishMent: "Ban",
-          });
+          await antiLinkConfig.findOneAndUpdate(
+            { guildId: interaction.guildId },
+            { punishMent: "Ban" }
+          )
           await i.editReply(`Changed censor link to **Ban**`);
           break;
 
@@ -439,48 +480,32 @@ module.exports = {
               content: "Plese add one whitelist link to continue",
             });
           }
-          await antiLinkConfig.updateMany({
-            guildId: interaction.guildId,
-            punishMent: "Kick",
-          });
+          await antiLinkConfig.findOneAndUpdate(
+            { guildId: interaction.guildId },
+            { punishMent: "Kick" }
+          )
           await i.editReply(`Changed censor link to **Kick**`);
           break;
 
         case "link-back":
-          response
-            .edit({
-              embeds: [autoModEmbed],
-              components: [row],
-            })
-            .then(async () => {
-              await i.reply({
-                content: "Change to previous methods",
-                ephemeral: true,
-              });
-              return;
-            });
+          i.update({
+            embeds: [autoModEmbed],
+            components: [row],
+          });
+
           break;
 
         case "link-punishment-back":
-          await response.edit({
+          await i.update({
             embeds: [antiLinkEmbed],
             components: [antiLinksRow],
-          });
-          await i.reply({
-            content: "Changed Back To Anti Link",
-            ephemeral: true,
           });
           break;
 
         case "censor-word":
-          response.edit({
-            embeds: [],
+          i.update({
+            embeds: [censorEmbed],
             components: [censorWordRow],
-            content: "Configure the censor word module",
-          });
-          await i.reply({
-            content: "Changing to censor words menu",
-            ephemeral: true,
           });
           break;
 
@@ -621,14 +646,10 @@ module.exports = {
           break;
 
         case "censor-punishment":
-          await response.edit({
+          await i.update({
             embeds: [],
             content: "Configure Censor Words Punishment",
             components: [censorPunishmentRow],
-          });
-          await i.reply({
-            content: "Changed to Censor Words module",
-            ephemeral: true,
           });
           break;
 
@@ -696,29 +717,17 @@ module.exports = {
           break;
 
         case "censor-punishment-back":
-          await response.edit({
+          await i.update({
             embeds: [],
             components: [censorWordRow],
-          });
-          await i.reply({
-            content: "Changed back the censor word module",
-            ephemeral: true,
           });
           break;
 
         case "censor-back":
-          response
-            .edit({
-              embeds: [autoModEmbed],
-              components: [row],
-            })
-            .then(async () => {
-              await i.reply({
-                content: "Change to previous methods",
-                ephemeral: true,
-              });
-              return;
-            });
+          i.update({
+            embeds: [autoModEmbed],
+            components: [row],
+          });
           break;
       }
     });

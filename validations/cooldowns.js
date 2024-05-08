@@ -1,4 +1,4 @@
-const cooldowns = new Map()
+const { cooldowns } = require('./cooldowns-cache')
 module.exports = ({ interaction, commandObj, handler }) => {
     if (cooldowns.has(interaction.user.id - commandObj.data.name)) {
         interaction.reply({

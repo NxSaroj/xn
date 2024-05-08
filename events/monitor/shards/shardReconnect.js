@@ -1,8 +1,8 @@
 const { Events } = require('discord.js'); 
 
 module.exports = {
-    name: Events.ShardReady,
+    name: Events.ShardReconnecting,
     async execute(shard) {
-        console.log(`${shard.id} Is ready`);
+        console.log(`${shard.id} Is Connecting`);
     }
 }

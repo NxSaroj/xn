@@ -3,6 +3,11 @@ const triggerConfig = require('../../models/misc/tags/triggerConfig')
 
 module.exports = {
     name: Events.InteractionCreate,
+    /**
+     * 
+     * @param {import('discord.js').Interaction} interaction 
+     * @returns 
+     */
     async execute(interaction) {
         if (!interaction.isModalSubmit()) return;
         if (!interaction.customId == 'trigger-modal') return;

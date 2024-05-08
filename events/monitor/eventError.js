@@ -7,6 +7,6 @@ module.exports = {
      * @param {import("discord.js").ErrorEvent} m 
      */
     execute(m) {
-        console.error(`Events Error: \n ${m} \n Error: ${m.error} \n ${m.target}`)
+        console.error(`Events Error: \n ${m} \N T`)
     }
 }

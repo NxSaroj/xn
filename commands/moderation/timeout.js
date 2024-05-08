@@ -16,7 +16,12 @@ module.exports = {
    * @param {Interaction} interaction
    */
 
-  run: async ({ client, interaction }) => {
+  run: async ({ interaction, client }) => {
+    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
+      return await interaction.reply({
+          content: `> I need moderate members permission to execute this command`
+      })
+  }
     const mentionable = interaction.options.getMember('target-user');
     const duration = interaction.options.getString('duration'); // 1d, 1 day, 1s 5s, 5m
     const reason = interaction.options.getString('reason') || 'No reason provided';

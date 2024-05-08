@@ -8,7 +8,7 @@ const {
   TextInputBuilder,
   TextInputStyle,
 } = require("discord.js");
-const triggerConfig = require("../../models/misc/tags/triggerConfig");
+const triggerConfig = require("../../../models/misc/tags/triggerConfig");
 
 module.exports = {
   data: new SlashCommandBuilder()

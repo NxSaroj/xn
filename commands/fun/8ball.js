@@ -23,8 +23,9 @@ module.exports = {
             'Amazing', 
             'Awesome',
             'Here we go again', 
-            'LOL'
-            
+            'LOL',
+            'Dumb', 
+            'Rat'
         ]
 
         const randomResponse = response[Math.floor(Math.random() * response.length)];
