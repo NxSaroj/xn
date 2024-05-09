@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 const { CommandKit } = require("commandkit");
 const { connect } = require("mongoose");
-const { searchEvents } = require('./handlers/eventHandler')
 const path = require("node:path");
 const fs = require("node:fs");
 const dotenv = require("dotenv");
@@ -38,7 +37,33 @@ new CommandKit({
 
 
 
+const searchEvents = (eventPath) => {
+    const eventFiles = fs
+      .readdirSync(eventPath)
+      .filter((file) => file.endsWith(".js"));
+  
+    eventFiles.forEach((file) => {
+      const filePath = path.join(eventPath, file);
+      const event = require(filePath);
+  
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args, client));
+      } else {
+        client.on(event.name, (...args) => event.execute(...args, client));
+      }
+    });
+  
+    const subDirectories = fs
+      .readdirSync(eventPath)
+      .filter((file) => fs.statSync(path.join(eventPath, file)).isDirectory());
+  
+    subDirectories.forEach((directory) => {
+      searchEvents(path.join(eventPath, directory));
+    });
+  };
+
 searchEvents(path.join(__dirname, 'events'), client)
+
 
 
 client.rest.on('rateLimited', (data) => {
