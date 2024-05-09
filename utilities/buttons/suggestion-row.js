@@ -8,6 +8,10 @@ const suggestionModuleSelectMenu = new StringSelectMenuBuilder()
     .setLabel("Suggestion Role")
     .setDescription("Role which can manage suggestions")
     .setValue("suggestion-role"),
+    new StringSelectMenuOptionBuilder()
+    .setLabel("Suggestion Channel")
+    .setDescription("Channel For Suggestion")
+    .setValue("suggestion-channel"),
 )
 
 const suggestionRow = new ActionRowBuilder().addComponents(suggestionModuleSelectMenu)

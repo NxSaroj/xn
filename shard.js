@@ -10,5 +10,4 @@ manager.on('shardCreate', (shard) => {
     console.log(`${shard.id} Has been launched`)
 })
 
-
 manager.spawn()
