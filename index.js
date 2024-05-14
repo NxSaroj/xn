@@ -38,9 +38,37 @@ new CommandKit({
 
 
 const searchEvents = (eventPath) => {
+<<<<<<< HEAD
   const eventFiles = fs
     .readdirSync(eventPath)
     .filter((file) => file.endsWith(".js"));
+=======
+    const eventFiles = fs
+      .readdirSync(eventPath)
+      .filter((file) => file.endsWith(".js"));
+  
+    eventFiles.forEach((file) => {
+      const filePath = path.join(eventPath, file);
+      const event = require(filePath);
+  
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args, client));
+      } else {
+        client.on(event.name, (...args) => event.execute(...args, client));
+      }
+    });
+  
+    const subDirectories = fs
+      .readdirSync(eventPath)
+      .filter((file) => fs.statSync(path.join(eventPath, file)).isDirectory());
+  
+    subDirectories.forEach((directory) => {
+      searchEvents(path.join(eventPath, directory));
+    });
+  };
+
+searchEvents(path.join(__dirname, 'events'), client)
+>>>>>>> 4724ed224dc65c3f0716b36af09f7e0fd7b10c34
 
   eventFiles.forEach((file) => {
     const filePath = path.join(eventPath, file);
@@ -63,6 +91,7 @@ const searchEvents = (eventPath) => {
 };
 
 searchEvents(path.join(__dirname, 'events'))
+
 
 client.rest.on('rateLimited', (data) => {
   console.log(`RateLimited: \n ${JSON.stringify(data)}`)

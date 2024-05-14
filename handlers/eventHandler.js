@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const fs = require('node:fs')
 const path = require('node:path')
 const searchEvents = (eventPath, client) => {
@@ -24,3 +25,5 @@ const searchEvents = (eventPath, client) => {
       searchEvents(path.join(eventPath, directory));
     });
   };
+=======
+>>>>>>> 4724ed224dc65c3f0716b36af09f7e0fd7b10c34
