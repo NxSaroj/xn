@@ -36,7 +36,7 @@ module.exports = {
             }
             
         }).then((response) => {
-            console.log(response.data)
+            console.log(response.data.data.relationships.memberships)
             console.log(typeof response)
         }).catch(err => {
             console.error(err.data)

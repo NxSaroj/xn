@@ -9,6 +9,7 @@ const {
   TextInputStyle,
 } = require("discord.js");
 const triggerConfig = require("../../../models/misc/tags/triggerConfig");
+const premiumGuildConfig = require("../../../models/premium/premium-guild-Config");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,37 +23,52 @@ module.exports = {
     )
     .setDMPermission(false),
   run: async ({ interaction }) => {
-
-    if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-        return await interaction.reply({
-            content: 'You dont have `Moderate Member(s)` powers to execute this command',
-            ephemeral: true,
-        })
+    if (
+      !interaction.member.permissions.has(
+        PermissionsBitField.Flags.ModerateMembers
+      )
+    ) {
+      return await interaction.reply({
+        content:
+          "You dont have `Moderate Member(s)` powers to execute this command",
+        ephemeral: true,
+      });
     }
     const triggerName = interaction.options.getString("trigger-name");
 
-
     try {
-        const triggerGuild = interaction.guild.id;
+      const triggerGuild = interaction.guild.id;
 
-        const lengthTrigger = await triggerConfig.find({
-            guildId: triggerGuild
-        })
-    
+      const lengthTrigger = await triggerConfig.find({
+        guildId: triggerGuild,
+      });
+
+      const isPremiumGuild = await premiumGuildConfig.findOne({
+        guildId: triggerGuild,
+      });
+
+      if (!isPremiumGuild) {
         if (lengthTrigger.length >= 10) {
-            return await interaction.reply({
-                content: 'Trigger creation limit has been reached\n Try patreon to increase the limit',
-                ephemeral: true
-            })
+          return await interaction.reply({
+            content:
+              "Trigger creation limit has been reached\n Try patreon to increase the limit",
+            ephemeral: true,
+          });
         }
-    
+      } else if (lengthTrigger.length >= 35) {
+        return await interaction.reply({
+          content:
+            "Trigger creation limit has been reached\n Try patreon to increase the limit",
+          ephemeral: true,
+        });
+      }
     } catch (e) {
-        console.error(`Error in ${__filename} \n ${e}`)
+      console.error(`Error in ${__filename} \n ${e}`);
     }
 
     const isTriggerCreated = await triggerConfig.findOne({
       triggerName: triggerName,
-      guildId: interaction.guild.id
+      guildId: interaction.guild.id,
     });
 
     if (isTriggerCreated) {
@@ -86,44 +102,37 @@ module.exports = {
       try {
         await interaction.showModal(modal);
       } catch (e) {
-        console.error(`Error in ${__filename} \n ${e}`)
+        console.error(`Error in ${__filename} \n ${e}`);
       }
+    }
 
-        }
+    const modal = new ModalBuilder()
+      .setCustomId("trigger-modal")
+      .setTitle("Add Trigger");
 
-        const modal = new ModalBuilder()
-        .setCustomId("trigger-modal")
-        .setTitle("Add Trigger");
+    const nameInput = new TextInputBuilder()
+      .setCustomId("trigger-name")
+      .setLabel("Trigger Name")
+      .setValue(triggerName)
+      .setStyle(TextInputStyle.Short);
 
-      const nameInput = new TextInputBuilder()
-        .setCustomId("trigger-name")
-        .setLabel("Trigger Name")
-        .setValue(triggerName)
-        .setStyle(TextInputStyle.Short);
+    const contentInput = new TextInputBuilder()
+      .setCustomId("trigger-content")
+      .setLabel("Trigger Content")
+      .setPlaceholder(
+        "You can use plcaeholders here join the support server for help"
+      )
+      .setStyle(TextInputStyle.Paragraph);
 
-      const contentInput = new TextInputBuilder()
-        .setCustomId("trigger-content")
-        .setLabel("Trigger Content")
-        .setPlaceholder(
-          "You can use plcaeholders here join the support server for help"
-        )
-        .setStyle(TextInputStyle.Paragraph);
+    const row1 = new ActionRowBuilder().addComponents(nameInput);
+    const row2 = new ActionRowBuilder().addComponents(contentInput);
 
-      const row1 = new ActionRowBuilder().addComponents(nameInput);
-      const row2 = new ActionRowBuilder().addComponents(contentInput);
+    modal.addComponents(row1, row2);
 
-      modal.addComponents(row1, row2);
-
-
-
-      try {
-        await interaction.showModal(modal)
-        
-      } catch (e) {
-        console.error(`Error in ${__filename} \n ${e}`)
-      }
-
+    try {
+      await interaction.showModal(modal);
+    } catch (e) {
+      console.error(`Error in ${__filename} \n ${e}`);
+    }
   },
-
-
 };

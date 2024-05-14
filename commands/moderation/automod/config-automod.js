@@ -2,7 +2,6 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ComponentType,
-  PermissionsBitField,
 } = require("discord.js");
 /** Importing Components */
 const {
@@ -95,11 +94,11 @@ module.exports = {
         },
         {
           name: "Threshold",
-          value: `${isLinkFilterEnabled?.linkThreshold || "`Not Enabled`"}`,
+          value: `${isLinkFilterEnabled?.linkThreshold || emojis.xn_wrong }`,
         },
         {
           name: "Punishment",
-          value: `${isLinkFilterEnabled?.punishMent || "`Not Enabled`"}`,
+          value: `${isLinkFilterEnabled?.punishMent || emojis.xn_wrong }`,
         }
       )
       .setColor("White")
@@ -128,7 +127,6 @@ module.exports = {
       embeds: [autoModEmbed],
       components: [row],
     });
-
     const collectorFilter = (i) => i.user.id == interaction.user.id;
 
     const collector = response.createMessageComponentCollector({
@@ -279,7 +277,7 @@ module.exports = {
               });
             dmMessageCollector.on("collect", async (message) => {
               const dmMessageContent = message.content;
-              await dmMessageCollector.stop();
+               dmMessageCollector.stop();
               await antiLinkConfig
                 .updateMany({
                   dmMessage: dmMessageContent,
@@ -325,7 +323,7 @@ module.exports = {
               });
             } else {
               const replyMesssages = message.content;
-              await replyMessageCollector.stop();
+               replyMessageCollector.stop();
               await antiLinkConfig
                 .updateOne({
                   replyMessage: replyMesssages,

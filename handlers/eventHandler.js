@@ -24,8 +24,3 @@ const searchEvents = (eventPath, client) => {
       searchEvents(path.join(eventPath, directory));
     });
   };
-
-  module.exports = {
-    searchEvents
-  }
-  

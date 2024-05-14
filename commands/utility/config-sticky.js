@@ -31,7 +31,7 @@ module.exports = {
         })
 
         if (isStickyConfigured) {
-            await stickyConfig.deleteMany({
+             stickyConfig.deleteMany({
                 guildId: interaction.guild.id
             }).then(async()=>{
                 await interaction.reply({
@@ -47,7 +47,7 @@ module.exports = {
                 return;
             })
         } else {
-            await stickyConfig.create({
+             stickyConfig.create({
                 guildId: interaction.guild.id
             }).then(async()=>{
                 return await interaction.reply({
