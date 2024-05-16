@@ -23,7 +23,8 @@ module.exports = {
                     await tagConfig.findOneAndUpdate(
                         { tagName: tagName },
                         { guildId: interaction.guild.id },
-                        { tagContent: tagContent }
+                        { tagContent: tagContent }, 
+                        
                     )
                     await interaction.reply({
                         content: `${tagName} Has been updated`

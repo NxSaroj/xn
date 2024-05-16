@@ -74,47 +74,42 @@ module.exports = {
         switch (linkPunishment) {
           case "Timeout":
             await message.member
-              .timeout(120_000)
-              .then(() => {
-                antiLinkConfig.deleteMany({
-                  guildId: message.guild.id,
-                  userId: message.author.id,
-                });
-              })
-              .catch((err) => {
+              .timeout(120_000) .catch((err) => {
                 return;
               });
+             await antiLinkConfig.deleteMany(
+                { userId: message.author.id },
+                { guildId: message.author.id },
+              );
+             
             await message.member.send();
             break;
           case "Ban":
             await message.member
-              .ban({ reason: "Link threshold reached" })
-              .then(() => {
-                antiLinkConfig.deleteMany({
-                  guildId: message.guild.id,
-                  userId: message.author.id,
-                });
-              })
-              .catch((err) => {
+              .ban({ reason: "Link threshold reached" }).catch((err) => {
                 return;
               });
+              await antiLinkConfig.deleteMany(
+                { userId: message.author.id },
+                { guildId: message.author.id },
+              );
+              
             break;
           case "Kick":
             await message.member
-              .kick({ reason: "Link threshold reached" })
-              .then(() => {
-                antiLinkConfig.deleteMany({
-                  guildId: message.guild.id,
-                  userId: message.author.id,
-                });
-              })
-              .catch((err) => {
+              .kick({ reason: "Link threshold reached" }).catch((err) => {
                 return;
               });
+              await antiLinkConfig.deleteMany(
+                { userId: message.author.id },
+                { guildId: message.author.id },
+              );
+              
             break;
         }
       } else {
         isUserMonitored.linkCount+=1
+        await isUserMonitored.save()
       }
 
       await message.delete().then(async () => {

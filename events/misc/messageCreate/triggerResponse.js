@@ -16,6 +16,7 @@ const {
 const {
   MemberTransformer,
   GuildTransformer,
+  UserTransformer
 } = require("@tagscript/plugin-discord");
 const triggerConfig = require("../../../models/misc/tags/triggerConfig");
 const cache = new Map();
@@ -52,7 +53,7 @@ module.exports = {
       });
     } else {
       const messageContent = await triggerConfig.findOne({
-        triggerName: message.content,
+        triggerName: message.content.trim(),
         guildId: message.guildId,
       });
       if (!messageContent) return;
@@ -61,9 +62,10 @@ module.exports = {
         .replace(`{guild(humans)}`, `${humanCount}`)
         .replace(`{guild(memberCount)}`, message.guild.memberCount); **/
       const rawContent = await ts.run(messageContent?.triggerContent, {
-        member: new MemberTransformer(message.member),
+       member: new MemberTransformer(message.member),
         args: new StringTransformer(message.content),
         guild: new GuildTransformer(message.guild),
+        user: new UserTransformer(message.author)
       });
       const contentInput = rawContent.toJSON();
       if (!contentInput) return;

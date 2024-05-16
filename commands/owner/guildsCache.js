@@ -14,13 +14,14 @@ module.exports = {
     const cachedBin = await create({
       files: [
         {
-          content: client.guilds.cache.forEach((guild) => guild.name),
+          content: client.guilds.cache.map((guild) => guild?.name),
           language: "javascript",
         },
       ],
     });
+ 
 
-    await interaction.editReply(`${cachedBin.url}`);
+    await interaction.editReply(`${cachedBin?.url}`);
   },
 
   options: {

@@ -38,55 +38,36 @@ module.exports = {
         if (isUserMonitored.censorLimit >= isUserMonitored.censorThreshold) {
           switch (censorPunishment) {
             case "Timeout":
-              await message.member
-                .timeout(120_000)
-                .then(async () => {
-                  await censorConfig
-                    .deleteMany({
-                      guildId: message.guildId,
-                      userId: message.author.id,
-                    })
-                    .catch((err) => {
-                      return;
-                    });
-                })
-                .catch((err) => {
-                  return;
-                });
+              await message.member.timeout(120_000).catch((err) => {
+                return;
+              });
+              await censorConfig.deleteMany({
+                guildId: message.guildId,
+                userId: message.author.id,
+              });
               break;
             case "Ban":
               await message.member
                 .ban({ reason: "Link threshold reached" })
-                .then(async () => {
-                  await censorConfig
-                    .deleteMany({
-                      guildId: message.guildId,
-                      userId: message.author.id,
-                    })
-                    .catch((err) => {
-                      return;
-                    });
-                })
                 .catch((err) => {
                   return;
                 });
+              await censorConfig.deleteMany({
+                guildId: message.guildId,
+                userId: message.author.id,
+              });
+
               break;
             case "Kick":
               await message.member
                 .kick({ reason: "Link threshold reached" })
-                .then(async () => {
-                  await censorConfig
-                    .deleteMany({
-                      guildId: message.guildId,
-                      userId: message.author.id,
-                    })
-                    .catch((err) => {
-                      return;
-                    });
-                })
                 .catch((err) => {
                   return;
                 });
+              await censorConfig.deleteMany({
+                guildId: message.guildId,
+                userId: message.author.id,
+              });
               break;
           }
         } else {

@@ -264,61 +264,11 @@ module.exports = {
             });
 
           sixthMessageCollector.on("collect", async (m) => {
-            const json = m.content;
+            const json = JSON.stringify(m.content)
             await sixthMessageCollector.stop();
-            try {
-              const jsonData = JSON.parse(json);
-              if (jsonData.title) {
-                previeEmbed.setTitle(jsonData.title);
-              }
-              if (jsonData.description) {
-                previeEmbed.setDescription(jsonData.description);
-              }
-
-              if (jsonData.color) {
-                previeEmbed.setColor(jsonData.color);
-              }
-
-              if (jsonData.image) {
-                previeEmbed.setImage(jsonData.image.url);
-              }
-
-              if (jsonData.thumbnail) {
-                previeEmbed.setThumbnail(jsonData.thumbnail.url);
-              }
-              if (jsonData.fields) {
-                jsonData.fields.forEach(async (field) => {
-                  previeEmbed.addFields({
-                    name: field.name,
-                    value: field.value,
-                    inline: field.inline,
-                  });
-                });
-              }
-
-              if (jsonData.footer) {
-                previeEmbed.setFooter({
-                  text: jsonData.footer.text,
-                  iconURL: jsonButton.footer.icon_url,
-                });
-              }
-
-              if (jsonData.author) {
-                previeEmbed.setAuthor({
-                  name: jsonData.author.name,
-                  iconURL: jsonData.author.icon_url,
-                });
-              }
-
-              reply.edit({ embeds: [previeEmbed] });
-            } catch (e) {
-              
-              await i.followUp({
-                content: "Invalid JSON, Try with a correct one",
-                ephemeral: true,
-              });
-              return;
-            }
+            reply.edit({ embeds: [json] }).catch((err) => {
+              return i.followUp({ content: "Invalid JSON", ephemeral: true });
+            });
           });
         }
 
@@ -354,6 +304,4 @@ module.exports = {
       console.error(e);
     }
   },
-
-
 };
