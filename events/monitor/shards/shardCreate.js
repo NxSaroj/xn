@@ -1,8 +1,0 @@
-const { Events } = require('discord.js'); 
-
-module.exports = {
-    name: Events.ShardReady,
-    async execute(shard) {
-        console.log(`${shard.id} Is ready`);
-    }
-}

@@ -7,6 +7,7 @@ module.exports = {
   async execute(message) {
     const guildConfig = await logsConfig.findOne({ guildId: message.guild.id });
     if (!guildConfig) return;
+    if (!guildConfig.messageLog) return;
     const channel = message.guild.channels.cache.get(guildConfig.channelId);
 
     if (!channel) return;

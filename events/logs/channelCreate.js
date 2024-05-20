@@ -13,6 +13,7 @@ module.exports = {
     async execute(channels) {
         const guildConfig = await logsConfig.findOne({ guildId: channels.guild.id });
     if (!guildConfig) return;
+    if (!guildConfig.channelLog) return;
     const channel = channels.guild.channels.cache.get(guildConfig.channelId) || (
       await channels.guild.channels.fetch(guildConfig.channelId)
     )

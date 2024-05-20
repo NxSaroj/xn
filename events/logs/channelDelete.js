@@ -5,7 +5,8 @@ module.exports = {
     name: Events.ChannelDelete,
     async execute(channels) {
         const guildConfig = await logsConfig.findOne({ guildId: channels.guild.id });
-    if (!guildConfig) return;
+        if (!guildConfig.channelLog) return;
+        if (!guildConfig) return;
     const channel = channels.guild.channels.cache.get(guildConfig.channelId);
 
     if (!channel) return;

@@ -1,10 +1,17 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js')
+const { emojis } = require('../../utilities/json/config.json')
+const { logsConfigRow } = require('../../utilities/select-menu/logConfigMenu')
 const logsConfig = require("../../models/moderation/logs/logsConfig");
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('logs-config')
     .setDescription('Check the log configration of the guild')
     .setDMPermission(false),
+    /**
+     * 
+     * @param {import('commandkit').SlashCommandProps} param0 
+     * @returns 
+     */
     run: async ({ interaction }) => {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return await interaction.reply({
@@ -21,46 +28,29 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(removeChannel)
         const guildConfig = await logsConfig.findOne({ guildId: interaction.guild.id })
     try {
-        if (!guildConfig) {
-            return await interaction.reply({
-                content: 'Logs has not been configured for this server \n Run `/add-log-channel` to add a log channel',
-                ephemeral: true
-            })
-        } else {
-
-            await interaction.deferReply()
-            const { guild } = interaction;
-
-            let channel =
-            interaction.guild.channels.cache.get(guildConfig.channelId) ||
-            "`Channel deleted`";  
-
-            const embed = new EmbedBuilder() 
-            .setAuthor({ name: guild.name, iconURL: guild.iconURL({ size: 256 }) })
-            .setColor('White')
-            .setDescription(`\n\n > **Logs Channel** <:xn_arrow:1206238725130952755> ${channel}`)
-
-            try {
-            const response = await interaction.editReply({
-                    embeds: [embed],
-                    components: [row]
-                })
-                const collectorFilter = i => i.user.id === interaction.user.id;
-                const confirmation = await response.awaitMessageComponent({ filter: collectorFilter });
-                if (confirmation.customId === 'remove-channel') {
-                    await logsConfig.findOneAndDelete({ guildId: interaction.guild.id, channelId: guildConfig.channelId }).then(async()=>{
-                        return await interaction.followUp({
-                            content: `${channel} Has been removed from logs`,
-                            ephemeral: true
-                        })
-                    })
-
-                }
-            } catch (err) {
-                console.log(`Error in ${__filename} \n ${err}`)
-            }
-            
+        const embed = {
+            color: 0xFFFFFF,
+            author: {
+                name: `${interaction.guild.name}`,
+                icon_url: interaction.guild.iconURL(),
+            },
+            fields: [
+                { name: `Message Logs`, value: `${guildConfig.messageLog ? emojis.xn_tick : emojis.xn_wrong}`, inline: false },
+                { name: `Channel Logs`, value: `${guildConfig.channelLog ? emojis.xn_tick : emojis.xn_wrong}`, inline: false },
+                { name: `Join Leave Logs`, value: `${guildConfig.welcomeLog ? emojis.xn_tick : emojis.xn_wrong}`, inline: false },
+            ]
         }
+        const response = await interaction.reply({ embeds: [embed], components: [logsConfigRow] })
+        const collector =   response.createMessageComponentCollector({
+            filter: (i) => i.user.id == interaction.user.id, 
+            time: 240_000, 
+            componentType: ComponentType.StringSelect
+        })
+        collector.on('collect', async (i) => {
+            switch (i.values[0]) {
+                
+            }
+        })
     } catch (err) {
         console.log(`Error in ${__filename} \n ${err}`)
         return await interaction.reply({
