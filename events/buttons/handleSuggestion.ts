@@ -1,16 +1,12 @@
-const { Events, EmbedBuilder, PermissionsBitField, Interaction } = require("discord.js");
-const suggestionConfig = require("../../models/misc/suggestionConfig");
-
-module.exports = {
+import { Events, EmbedBuilder, PermissionsBitField, Interaction } from 'discord.js'
+import suggestionConfig from '../../models/misc/suggestionConfig'
+export default {
   name: Events.InteractionCreate,
-  /**
-   * 
-   * @param {import('discord.js').Interaction} interaction 
-   * @returns 
-   */
-  async execute(interaction) {
+  async execute(interaction: import('discord.js').ButtonInteraction) {
     if (!interaction.isButton()) return;
-    try {
+    if (!interaction.inCachedGuild()) return
+    if (!interaction.channel) return;
+    try { 
       const [type, suggestionId, action] = interaction.customId.split(".");
       if (!type || !suggestionId || !action) return;
       if (type !== "suggestion") return;
@@ -19,6 +15,9 @@ module.exports = {
       const targetSuggestion = await suggestionConfig.findOne({
         suggestionId,
       });
+      if (!targetSuggestion) return await interaction.reply({
+        content: "Suggestion Has Been Removed From DB, Try Again Later"
+      })
       const targetMessage = await interaction.channel.messages.fetch(
         targetSuggestion.messageId
       );
@@ -32,16 +31,16 @@ module.exports = {
             PermissionsBitField.Flags.ManageGuild
           )
         ) {
-          return await interaction.editReply({
+           await interaction.editReply({
             content:
               "You need `Manage Guild(s)` permissions to execute this command",
-            ephemeral: true,
           });
+          return;
         }
 
         targetSuggestion.status = "Approve";
         targetMessageEmbed.fields[1].value = "Approved";
-        targetMessageEmbed.data.color = 0x00FF42
+        EmbedBuilder.from(targetMessageEmbed).setColor('Green')
 
         await targetSuggestion.save();
         await interaction.editReply(
@@ -62,13 +61,13 @@ module.exports = {
           return await interaction.editReply({
             content:
               "You need `Manage Guild(s)` permissions to execute this command",
-            ephemeral: true,
+            
           });
         }
       
         targetSuggestion.status = "Rejected";
         targetMessageEmbed.fields[1].value = "Rejected";
-        targetMessageEmbed.data.color = 0xff0000
+        EmbedBuilder.from(targetMessageEmbed).setColor('Red')
 
         await targetSuggestion.save();
         await interaction.editReply(
@@ -83,7 +82,6 @@ module.exports = {
       console.error(`Error in ${__filename} \n ${err}`);
       await interaction.editReply({
         content: "Error camed, Try again later",
-        ephemeral: true,
       });
       return;
     }

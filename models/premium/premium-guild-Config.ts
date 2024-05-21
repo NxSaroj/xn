@@ -1,8 +1,8 @@
-const { Schema, model } = require('mongoose')
+import { Schema, model } from 'mongoose'
 
 const premiumGuildConfig = new Schema({
     guildId: [String],
     guildName: [String]
 })
 
-module.exports = model('premiumGuildConfig', premiumGuildConfig)
+export default model('premiumGuildConfig', premiumGuildConfig)

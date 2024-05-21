@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+import { Schema, model } from 'mongoose'
 
 const spotlightConfig = new Schema({ 
     userId: {
@@ -13,4 +13,4 @@ const spotlightConfig = new Schema({
     }
 })
 
-module.exports = model('spotlightConfig', spotlightConfig)
+export default model('spotlightConfig', spotlightConfig)

@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose'
 
 const aiConfig = new Schema({
     guildId: String,
@@ -9,4 +9,4 @@ const aiConfig = new Schema({
     channel: String,
 })
 
-module.exports = model('aiConfig', aiConfig)
+export default model('aiConfig', aiConfig)

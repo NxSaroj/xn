@@ -1,5 +1,5 @@
-const { Events } = require("discord.js");
-const {
+import { Events } from 'discord.js'
+import {
   Interpreter,
   RandomParser,
   RangeParser,
@@ -12,22 +12,19 @@ const {
   BreakParser,
   StringTransformer,
   JSONVarParser,
-} = require("tagscript");
-const {
+} from 'tagscript'
+import {
   MemberTransformer,
   GuildTransformer,
   UserTransformer
-} = require("@tagscript/plugin-discord");
-const triggerConfig = require("../../../models/misc/tags/triggerConfig");
+}  from "@tagscript/plugin-discord"
+import triggerConfig  from "../../../models/misc/tags/triggerConfig"
 const cache = new Map();
-module.exports = {
+export default {
   name: Events.MessageCreate,
-  /**
-   *
-   * @param {import('discord.js').Message} message
-   * @returns
-   */
-  async execute(message) {
+  async execute(message: import('discord.js').Message) {
+    if (!message.inGuild()) return
+    if (!message.member) return;
     if (message.author.bot) return;
     const triggerGuilds = await triggerConfig.findOne({
       guildId: message.guild.id,
@@ -57,11 +54,12 @@ module.exports = {
         guildId: message.guildId,
       });
       if (!messageContent) return;
+      if (!messageContent.triggerContent) return;
       /** const contentInput = messageContent.triggerContent
         .replace(`{guild(bots)}`, `${botCount}`)
         .replace(`{guild(humans)}`, `${humanCount}`)
         .replace(`{guild(memberCount)}`, message.guild.memberCount); **/
-      const rawContent = await ts.run(messageContent?.triggerContent, {
+      const rawContent = await ts.run(messageContent.triggerContent, {
        member: new MemberTransformer(message.member),
         args: new StringTransformer(message.content),
         guild: new GuildTransformer(message.guild),
@@ -72,7 +70,7 @@ module.exports = {
 
       try {
         await message.channel.send({
-          content: contentInput?.body,
+          content: contentInput.body || "Error Occured. Try again later"
         });
         cache.set(message.content, contentInput?.body);
         setTimeout(() => {

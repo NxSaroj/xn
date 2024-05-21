@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose'
 
 const youtubeConfig = new Schema({
     guildId: {
@@ -36,4 +36,4 @@ const youtubeConfig = new Schema({
     }
 })
 
-module.exports = model('youtubeConfig', youtubeConfig)
+export default model('youtubeConfig', youtubeConfig)

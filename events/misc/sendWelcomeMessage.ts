@@ -1,11 +1,11 @@
-const { Events, EmbedBuilder } = require("discord.js");
-const welcomeConfig = require("../../models/welcome/welcomeConfig");
-/**
- * @param {import('discord.js').GuildMember} guildMember
- */
-module.exports = {
+import { Events, EmbedBuilder } from "discord.js";
+import type { GuildMember } from "discord.js";
+
+import welcomeConfig from "../../models/welcome/welcomeConfig";
+
+export default {
   name: Events.GuildMemberAdd,
-  async execute(guildMember) {
+  async execute(guildMember: GuildMember) {
     const guildId = guildMember.guild.id;
     const existingSetup = await welcomeConfig.findOne({ guildId: guildId });
     const welcomeConfigs = await welcomeConfig.find({
@@ -14,16 +14,19 @@ module.exports = {
     if (!existingSetup) {
       return;
     }
+    if (!existingSetup.channelId) return
     const targetChannel = guildMember.guild.channels.cache.get(
       existingSetup.channelId
     );
-
+    if (!targetChannel?.isTextBased()) return
     for (const welcomeConfig of welcomeConfigs) {
       const customMessage = welcomeConfig.customMessage;
+      if (!welcomeConfig.messageContent) return;
       const messageContent = welcomeConfig.messageContent
       .replace(`{target(user.mention)}`, `<@${guildMember.id}>`)
       .replace(`{target(user.username)}`, `${guildMember.user.username}`)
       .replace(`{guild.name}`, `${guildMember.guild.name}`);
+      
       try {
         const title = customMessage[0].data.title
           .replace(`{target(user.mention)}`, `<@${guildMember.id}>`)

@@ -1,9 +1,9 @@
-const { Events } = require('discord.js');
-const stickyConfig = require('../../models/premium/stickyConfig');
+import { Events } from 'discord.js'
+import stickyConfig from '../../models/premium/stickyConfig'
 
 module.exports = {
     name: Events.GuildMemberAdd,
-    async execute(guildMember) {
+    async execute(guildMember: import('discord.js').GuildMember) {
         const isStickyConfigured = await stickyConfig.findOne({
             guildId: guildMember.guild.id
         });

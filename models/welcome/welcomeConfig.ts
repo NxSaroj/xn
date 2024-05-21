@@ -1,5 +1,4 @@
-const { Schema, model } = require('mongoose')
-
+import { Schema, model } from 'mongoose'
 const welcomeConfigSchema = new Schema({
     guildId: String,
     channelId: {
@@ -16,4 +15,4 @@ const welcomeConfigSchema = new Schema({
     }
 })
 
-module.exports = model('welcomeConfig', welcomeConfigSchema)
+export default  model('welcomeConfig', welcomeConfigSchema)

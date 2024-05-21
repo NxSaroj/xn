@@ -1,24 +1,24 @@
-  const { Events, GuildMember } = require('discord.js')
-const autoroleConfig = require('../../models/misc/autoroleConfig');
+import { Events } from 'discord.js'
+import type { GuildMember } from 'discord.js'
+import autoroleConfig from '../../models/misc/autoroleConfig'
 
-module.exports = {
+export default {
     name: Events.GuildMemberAdd,
-    /**
-     * 
-     * @param {GuildMember} guildMember 
-     * @returns 
-     */
-    async execute(guildMember) {
+    async execute(guildMember: GuildMember) {
+        if (!guildMember.guild) return
         const isConfigured = await autoroleConfig.findOne({ guildId: guildMember.guild.id })
        if (!isConfigured) return;
         const autoRole = isConfigured.roleId
-        const guildAutoRole = guildMember.guild.roles.cache.get(autoRole)
         if (!autoRole) {
             await autoroleConfig.deleteMany({ guildId: guildMember.guild.id })
+            return;
         }
+        const guildAutoRole = guildMember.guild.roles.cache.get(autoRole)
         if (!guildAutoRole) {
             await autoroleConfig.deleteMany({ guildId: guildMember.guild.id })
+            return
         }
+        
       
         try {
             await guildMember.roles.add(autoRole)

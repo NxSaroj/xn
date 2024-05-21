@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+import { Schema, model } from 'mongoose'
 
 const stickyConfig = new Schema({
     userId: String,
@@ -9,4 +9,4 @@ const stickyConfig = new Schema({
     }
 })
 
-module.exports = model('stickyConfig', stickyConfig)
+export default model('stickyConfig', stickyConfig)

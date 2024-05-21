@@ -1,4 +1,4 @@
-const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder } = require('discord.js')
+import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder } from 'discord.js'
 
 const suggestionModuleSelectMenu = new StringSelectMenuBuilder()
 .setCustomId("suggestion-module-menu")
@@ -14,8 +14,8 @@ const suggestionModuleSelectMenu = new StringSelectMenuBuilder()
     .setValue("suggestion-channel"),
 )
 
-const suggestionRow = new ActionRowBuilder().addComponents(suggestionModuleSelectMenu)
+const suggestionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(suggestionModuleSelectMenu)
 
-module.exports = {
-    suggestionRow
+export {
+  suggestionRow
 }
