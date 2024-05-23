@@ -1,14 +1,9 @@
-const { Events, Message } = require('discord.js')
-const linkOnlyConfig = require('../../models/misc/link-channel-config')
+import { Events } from 'discord.js'
+import linkOnlyConfig from '../../models/misc/link-channel-config'
 
-module.exports = {
+export default {
     name: Events.MessageCreate,
-    /**
-     * 
-     * @param {Message} message 
-     * @returns 
-     */
-    async execute(message) {
+    async execute(message:any) {
 
         try {
             const isLinkOnlyEnabled = await linkOnlyConfig.findOne({

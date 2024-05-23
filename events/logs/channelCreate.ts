@@ -1,16 +1,10 @@
-const { Events, EmbedBuilder } = require('discord.js')
-const logsConfig = require('../../models/moderation/logs/logsConfig')
+import { Events, EmbedBuilder } from 'discord.js'
+import logsConfig  from '../../models/moderation/logs/logsConfig'
 
-/**
- * 
- * @param {import('events').EventEmitter} channels
- * 
- * 
- */
 
-module.exports = {
+export default{
     name: Events.ChannelCreate,
-    async execute(channels) {
+    async execute(channels: import('discord.js').GuildChannel) {
         const guildConfig = await logsConfig.findOne({ guildId: channels.guild.id });
     if (!guildConfig) return;
     if (!guildConfig.channelLog) return;

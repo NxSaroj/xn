@@ -1,15 +1,10 @@
-const { Events, Message, Client } = require("discord.js");
-const triggerConfig = require("../../models/misc/tags/triggerConfig");
-const premiumGuildConfig = require("../../models/premium/premium-guild-Config");
-module.exports = {
+import { Events } from 'discord.js'
+import type { Client } from 'discord.js';
+import triggerConfig from "../../models/misc/tags/triggerConfig";
+import premiumGuildConfig from "../../models/premium/premium-guild-Config";
+export default {
   name: Events.MessageCreate,
-  /**
-   *
-   * @param {Message} message
-   * @param {Client} client
-   * @returns
-   */
-  async execute(message, client) {
+  async execute(message:any, client:Client) {
     const ownerId = ["1129393606432661575"];
     if (!ownerId.includes(message.author.id)) return;
     if (message.content.startsWith(".run")) {
@@ -33,7 +28,7 @@ module.exports = {
               endTime - startTime
             )}\n\n**__Type:__**\n${typeof output}`
           )
-          .catch((err) => {
+          .catch((err:any) => {
             return response.edit(`**__Error__** \n ${err}`);
           });
         return;

@@ -1,7 +1,7 @@
 import { Events } from 'discord.js'
 import stickyConfig from '../../models/premium/stickyConfig'
 
-module.exports = {
+export default {
     name: Events.GuildMemberAdd,
     async execute(guildMember: import('discord.js').GuildMember) {
         const isStickyConfigured = await stickyConfig.findOne({

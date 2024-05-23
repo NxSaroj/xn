@@ -1,10 +1,9 @@
-const { Events, EmbedBuilder } = require("discord.js");
-const logsConfig = require('../../models/moderation/logs/logsConfig')
+import { Events, EmbedBuilder } from 'discord.js'
+import logsConfig from '../../models/moderation/logs/logsConfig'
 
-
-module.exports = {
+export default {
   name: Events.MessageDelete,
-  async execute(message) {
+  async execute(message:any) {
     const guildConfig = await logsConfig.findOne({ guildId: message.guild.id });
     if (!guildConfig) return;
     if (!guildConfig.messageLog) return;

@@ -1,8 +1,8 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose'
 
 const vKickConfig = new Schema({
     userId: String,
     guildId: String,
 })
 
-module.exports = model('vKickConfig', vKickConfig)
+export default model('vKickConfig', vKickConfig)

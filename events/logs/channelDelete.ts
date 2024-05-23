@@ -1,4 +1,4 @@
-const { Events, EmbedBuilder } = require('discord.js')
+/**const { Events, EmbedBuilder } = require('discord.js')
 const logsConfig = require('../../models/moderation/logs/logsConfig')
 
 module.exports = {
@@ -30,4 +30,4 @@ module.exports = {
         console.error(__filename, err)
       }
     }
-}
+}**/
