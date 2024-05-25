@@ -304,18 +304,17 @@ export async function run({ interaction }: SlashCommandProps) {
                 dmMessage: dmMessageContent,
               })
               .then(async () => {
-                return await i
-                  .followUp({
-                    content: `Updated the dm message`,
-                    ephemeral: true,
-                  })
-                  .catch(async (e) => {
-                    console.error(e);
-                    await i.followUp({
-                      content: `DB Error try again later`,
-                    });
-                    return;
-                  });
+                return await i.followUp({
+                  content: `Updated the dm message`,
+                  ephemeral: true,
+                });
+              })
+              .catch(async (e) => {
+                console.error(e);
+                await i.followUp({
+                  content: `DB Error try again later`,
+                });
+                return;
               });
 
             dmMessageCollector.stop();
@@ -605,7 +604,7 @@ export async function run({ interaction }: SlashCommandProps) {
             return;
           }
           const replyMesssages = message.content;
-          await censoreplyMessageCollector?.stop();
+          censoreplyMessageCollector?.stop();
           censorConfig
             .updateOne({
               replyMessage: replyMesssages,

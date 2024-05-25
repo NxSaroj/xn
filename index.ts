@@ -1,4 +1,4 @@
-import  { Client } from 'discord.js';
+import  { Client, GatewayIntentBits } from 'discord.js';
 import  { CommandKit }  from 'commandkit';
 import  { connect } from 'mongoose';
 import  path from 'path';
@@ -7,12 +7,12 @@ import 'dotenv/config';
 
 const client = new Client({
   intents: [
-    "Guilds",
-    "MessageContent",
-    "GuildMembers",
-    "GuildPresences",
-    "GuildVoiceStates",
-    "GuildMessages",
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildModeration,
   ],
 });
 
