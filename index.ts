@@ -17,6 +17,7 @@ const client = new Client({
 });
 
 
+
 new CommandKit({
   client: client,
   commandsPath: path.join(__dirname, "commands"),
