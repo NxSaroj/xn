@@ -104,28 +104,26 @@ export async function run ({ interaction }: SlashCommandProps) {
     });
 }
 
-export default {
-  data: new SlashCommandBuilder()
-  .setName("setup-youtube")
-  .setDescription("Configure your guild for youtube notification")
-  .addStringOption((option) =>
-    option
-      .setName("channel-id")
-      .setDescription("The id of your youtube channel")
-      .setRequired(true)
-  )
-  .addChannelOption((option) =>
-    option
-      .setName("channel")
-      .setDescription("The channel for notification")
-      .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
-      .setRequired(true)
-  )
-  .addStringOption((option) =>
+export const data =  new SlashCommandBuilder()
+.setName("setup-youtube")
+.setDescription("Configure your guild for youtube notification")
+.addStringOption((option) =>
   option
-    .setName("custom-message")
-    .setDescription("Message that will sent on every new upload")
-    .setRequired(false)
+    .setName("channel-id")
+    .setDescription("The id of your youtube channel")
+    .setRequired(true)
 )
-  .setDMPermission(false),
-}
+.addChannelOption((option) =>
+  option
+    .setName("channel")
+    .setDescription("The channel for notification")
+    .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+    .setRequired(true)
+)
+.addStringOption((option) =>
+option
+  .setName("custom-message")
+  .setDescription("Message that will sent on every new upload")
+  .setRequired(false)
+)
+.setDMPermission(false)
