@@ -5,7 +5,7 @@ import  path from 'path';
 import  fs from 'fs';
 import 'dotenv/config';
 
-const client = new Client({
+const client:Client =  new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.MessageContent,
