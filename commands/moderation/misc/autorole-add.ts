@@ -1,38 +1,42 @@
-const {
+import {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionsBitField,
-} = require("discord.js");
-const autoroleConfig = require("../../../models/misc/autoroleConfig");
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("add-autorole")
-    .setDescription("add a auto-role for guild")
-    .addRoleOption((option) =>
-      option
-        .setName("role")
-        .setDescription("the target role for autorole")
-        .setRequired(true)
-    )
-    .setDMPermission(false),
-  run: async ({ interaction }) => {
+} from 'discord.js'
+import autoroleConfig from '../../../models/misc/autoroleConfig'
+import type { SlashCommandProps } from 'commandkit'
+
+export const data = new SlashCommandBuilder()
+.setName("add-autorole")
+.setDescription("add a auto-role for guild")
+.addRoleOption((option) =>
+  option
+    .setName("role")
+    .setDescription("the target role for autorole")
+    .setRequired(true)
+)
+.setDMPermission(false)
+
+
+export async function run ({ interaction }: SlashCommandProps) {
+    if (!interaction.inCachedGuild()) return;
     await interaction.deferReply({ ephemeral: true });
     const role = interaction.options.getRole("role");
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
         return await interaction.editReply({
             content: '> **Required Permissions** <:xn_arrow:1206238725130952755> `Administrator`',
-            ephemeral: true
         })
     }
 
-    const botRolePosition = interaction.guild.members.me.roles.highest.position;
-    const targetRolePosition = role.position
+    const botRolePosition = interaction.guild?.members?.me?.roles.highest.position;
+    const targetRolePosition = role?.position
 
+    if (!botRolePosition) return
+    if (!targetRolePosition) return
     if (targetRolePosition >= botRolePosition) {
         return await interaction.editReply({
             content: "I can't moderate that role",
-            ephemeral: true
         })
     }
 
@@ -44,20 +48,18 @@ module.exports = {
         if (isAutoRoleConfigured) {
             return await interaction.editReply({
                 content: 'Auto-role for this server has already been configured run `/remove-autorole` to remove the autorole',
-                ephemeral: true
             }) 
         } else {
            await autoroleConfig.create({
-                roleId: role.id,
+                roleId: role?.id,
                 guildId: interaction.guild.id,
             }).then(async()=>{
                 const embed = new EmbedBuilder()
                 .setDescription(`> ${role} will be assigned upon joinning`)
                 .setColor('White')
-                .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL({ size: 256 })})
+                .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL({ size: 256 }) || '' })
                 return await interaction.editReply({
                     embeds: [embed],
-                    ephemeral: true
                 })
             })
         }
@@ -65,10 +67,7 @@ module.exports = {
         console.error(`Error in ${__filename} \n ${e}`)
         return await interaction.editReply({
             content: 'Error while setting up autorole, try again later',
-            ephemeral: true
+
         })
     }
-  },
-
-
-};
+}
