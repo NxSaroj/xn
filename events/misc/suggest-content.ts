@@ -1,17 +1,17 @@
-const {
-  Events,
+import {
   EmbedBuilder,
   ButtonBuilder,
   ButtonStyle,
   ActionRowBuilder,
-} = require("discord.js");
-const guildConfig = require("../../models/misc/guildConfig");
-const suggestionConfig = require("../../models/misc/suggestionConfig");
-const formatResults = require("../../utilities/formatResult");
+  type ModalSubmitInteraction
+} from 'discord.js'
+import guildConfig from "../../models/misc/guildConfig"
+import suggestionConfig from '../../models/misc/suggestionConfig'
 
-module.exports = {
+export default {
   name: Events.InteractionCreate,
-  async execute(interaction) {
+  async execute(interaction: ModalSubmitInteraction) {
+    if (!interaction.inCachedGuild()) return;
     if (!interaction.isModalSubmit()) return;
     if (interaction.customId == "suggestion-modal") {
       const isSuggestionConfigured = await guildConfig.findOne({
@@ -22,7 +22,7 @@ module.exports = {
         interaction.fields.getTextInputValue("suggestion-content");
       try {
         const targetChannel = interaction.guild.channels.cache.get(
-          isSuggestionConfigured.channelId
+          isSuggestionConfigured?.channelId
         );
 
         const newSuggestion = new suggestionConfig({
@@ -42,7 +42,6 @@ module.exports = {
           .addFields(
             { name: "Suggestion", value: suggestion },
             { name: "Status", value: "Pending" },
-            { name: "Votes", value: formatResults() }
           )
           .setColor("White");
 
@@ -58,7 +57,7 @@ module.exports = {
           .setLabel("Reject")
           .setStyle(ButtonStyle.Danger);
 
-        const row = new ActionRowBuilder().addComponents(
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
           approveButton,
           rejectButton
         );
@@ -67,6 +66,7 @@ module.exports = {
           await interaction.reply({
             content: "Thanks, Your suggestion has been created for the guild",
           });
+          if (!targetChannel?.isTextBased()) return;
           const suggestionMessage = await targetChannel.send({
             content: "",
             embeds: [suggestionEmbed],

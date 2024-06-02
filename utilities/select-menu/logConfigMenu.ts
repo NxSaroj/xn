@@ -5,16 +5,20 @@ const logsConfigMenu = new StringSelectMenuBuilder()
 .setPlaceholder("Logs Filters")
 .addOptions(
   new StringSelectMenuOptionBuilder()
+  .setLabel("Enable All")
+  .setDescription("Enable the logs for the guild")
+  .setValue("enable-logs"),
+  new StringSelectMenuOptionBuilder()
     .setLabel("Message Logs")
-    .setDescription("Confgure the message logs for the guild")
+    .setDescription("Configure the message logs for the guild")
     .setValue("message-logs"),
   new StringSelectMenuOptionBuilder()
     .setLabel("Channel Logs")
-    .setDescription("Confgur the message logs for the guild")
+    .setDescription("Configure the message logs for the guild")
     .setValue("channel-logs"),
     new StringSelectMenuOptionBuilder()
     .setLabel("Welcome Logs")
-    .setDescription("Confgur the message logs for the guild")
+    .setDescription("Configure the message logs for the guild")
     .setValue("welcome-logs")
 );
 

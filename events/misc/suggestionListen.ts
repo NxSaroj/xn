@@ -1,9 +1,10 @@
-const { Events } = require('discord.js')
-const guildConfig = require("../../models/misc/guildConfig");
+import { Events, type Message } from 'discord.js'
+import guildConfig from '../../models/misc/guildConfig';
 
-module.exports = {
+export default {
     name: Events.MessageCreate,
-    async execute(message) {
+    async execute(message: Message) {
+        if (!message.inGuild()) return;
         const isSuggestionEnabled = await guildConfig.findOne({
             guildId: message.guild.id
         }).catch((e)=>{

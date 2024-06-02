@@ -1,4 +1,4 @@
-const { Schema, model, trusted } = require("mongoose");
+import { Schema, model } from 'mongoose'
 
 const logsConfig = new Schema({
   channelId: String,
