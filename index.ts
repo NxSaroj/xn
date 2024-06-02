@@ -21,7 +21,7 @@ const client:Client =  new Client({
 new CommandKit({
   client: client,
   commandsPath: path.join(__dirname, "commands"),
-  devGuildIds: ["1206513471034753064", "1201463650624491660", "1215929240168693780"],
+  devGuildIds: ["1240657449569226863"],
   devUserIds: [
     "1129393606432661575",
     "750339984598368287",

@@ -1,4 +1,4 @@
-import { EmbedBuilder, ComponentType }from 'discord.js'
+import { EmbedBuilder, ComponentType, ColorResolvable }from 'discord.js'
 import guildConfig from '../../models/misc/guildConfig'
 import { suggestionRow } from '../../utilities/buttons/suggestion-row'
 import { emojis } from '../../utilities/json/config.json'
@@ -32,8 +32,8 @@ export async function run({ interaction }:SlashCommandProps) {
     const response = await interaction.reply({
       embeds: [{
         title: 'Customize Embed Module', 
-        thumbnail: interaction.guild.iconURL()
-        color: 0xff0000
+        thumbnail: interaction.guild.iconURL(),
+        color: 0xff000 as ColorResolvable,
         fields: [
           {
             name: "Enabled",

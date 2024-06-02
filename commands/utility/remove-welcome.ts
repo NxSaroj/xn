@@ -11,7 +11,7 @@ export const data:CommandData = {
   name: 'remove-welcome-channel', 
   description: 'remove the configured welcome channel', 
   options: [
-    { name: 'channel', description: 'the channel to remove', type: ApplicationCommandOptionType.Channel, channel_types: [ChannelType.GuildText]  required: true }
+    { name: 'channel', description: 'the channel to remove', type: ApplicationCommandOptionType.Channel, channel_types: [ChannelType.GuildText],  required: true }
   ],
   dm_permission: false
 }

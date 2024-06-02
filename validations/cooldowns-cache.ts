@@ -1,4 +1,4 @@
 const cooldowns = new Map()
-module.exports = {
+export {
     cooldowns
 }

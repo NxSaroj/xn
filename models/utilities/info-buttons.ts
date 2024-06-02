@@ -1,4 +1,4 @@
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+import { ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js'
 
 const patreonButton = new ButtonBuilder()
 .setLabel('Patreon')
@@ -25,4 +25,4 @@ const infoButtonRow = new ActionRowBuilder()
     infoButton
 )
 
-module.exports = infoButtonRow;
+export default infoButtonRow

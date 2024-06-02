@@ -4,7 +4,7 @@ import {
     PermissionsBitField,
   } from 'discord.js'
   import autoroleConfig from '../../../models/misc/autoroleConfig'
-import { SlashCommandProps } from 'commandkit'
+import type { SlashCommandProps } from 'commandkit'
 
 export const data = new SlashCommandBuilder()
 .setName("remove-autorole")

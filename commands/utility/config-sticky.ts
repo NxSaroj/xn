@@ -22,7 +22,7 @@ export async function run ({ interaction }: import('commandkit').SlashCommandPro
     .setDescription(`> **Enabled The Sticky Roles**`)
 
     const disableEmbed = new EmbedBuilder()
-    .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL({ size: 256 }) || || undefined})
+    .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL({ size: 256 }) || undefined})
     .setColor('White')
     .setDescription(`> **Disabled The Sticky Roles**`)
 
