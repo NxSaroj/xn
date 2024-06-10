@@ -67,6 +67,10 @@ export async function run({
         },
       ],
     };
+
+
+    
+
     const response = await interaction.reply({
       embeds: [embed],
       components: [logsConfigRow],
@@ -133,7 +137,7 @@ export async function run({
             });
           break;
 
-        case "messageLog":
+        case "message-logs":
           await i.deferReply({ ephemeral: true });
           const isMLogEnabled = await logsConfig.findOne({
             guildId: interaction.guild.id,
@@ -174,6 +178,91 @@ export async function run({
               });
           }
           break;
+
+          case "channel-logs":
+            await i.deferReply({ ephemeral: true });
+            const isCLogEnabled = await logsConfig.findOne({
+              guildId: interaction.guild.id,
+            });
+            if (!isCLogEnabled)
+              return await i.editReply({
+                content: "The log module is not enabled",
+              });
+            if (isCLogEnabled.channelLog == true) {
+              logsConfig
+                .findOneAndUpdate(
+                  { guildId: interaction.guildId },
+                  { channelLog: false }
+                )
+                .then(() => {
+                  i.editReply({
+                    content: "Message will not be logged from now on",
+                  });
+                })
+                .catch((err) => {
+                  console.error(err);
+                  i.editReply({ content: "DB Error, Try again later" });
+                  return;
+                });
+            } else {
+              logsConfig
+                .findOneAndUpdate(
+                  { guildId: interaction.guildId },
+                  { channelLog: true }
+                )
+                .then(() => {
+                  i.editReply({ content: "Message will  be logged from now on" });
+                })
+                .catch((err) => {
+                  console.error(err);
+                  i.editReply({ content: "DB Error, Try again later" });
+                  return;
+                });
+            }
+            break;
+
+            case "welcome-logs":
+              await i.deferReply({ ephemeral: true });
+              const isWLogEnabled = await logsConfig.findOne({
+                guildId: interaction.guild.id,
+              });
+              if (!isWLogEnabled)
+                return await i.editReply({
+                  content: "The log module is not enabled",
+                });
+              if (isWLogEnabled.messageLog == true) {
+                logsConfig
+                  .findOneAndUpdate(
+                    { guildId: interaction.guildId },
+                    { welcomeLog: false }
+                  )
+                  .then(() => {
+                    i.editReply({
+                      content: "Message will not be logged from now on",
+                    });
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                    i.editReply({ content: "DB Error, Try again later" });
+                    return;
+                  });
+              } else {
+                logsConfig
+                  .findOneAndUpdate(
+                    { guildId: interaction.guildId },
+                    { welcomeLog: true }
+                  )
+                  .then(() => {
+                    i.editReply({ content: "Message will  be logged from now on" });
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                    i.editReply({ content: "DB Error, Try again later" });
+                    return;
+                  });
+              }
+              break;
+            
       }
     });
   } catch (err) {

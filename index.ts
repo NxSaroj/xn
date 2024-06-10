@@ -1,8 +1,9 @@
 import  { Client, GatewayIntentBits } from 'discord.js';
 import  { CommandKit }  from 'commandkit';
+import { loadEvents } from './utilities/handlers/eventHandler'
 import  { connect } from 'mongoose';
+import colors from 'colors'
 import  path from 'path';
-import  fs from 'fs';
 import 'dotenv/config';
 
 const client:Client =  new Client({
@@ -13,9 +14,9 @@ const client:Client =  new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildMessages,
   ],
 });
-
 
 
 new CommandKit({
@@ -31,31 +32,10 @@ new CommandKit({
   bulkRegister: true,
 });
 
-const searchEvents = (eventPath:string) => {
-  const eventFiles = fs
-    .readdirSync(eventPath)
-    .filter((file) => file.endsWith(".js"));
-  eventFiles.forEach((file) => {
-    const filePath = path.join(eventPath, file);
-    const event = require(filePath);
 
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args, client));
-    } else {
-      client.on(event.name, (...args) => event.execute(...args, client));
-    }
-  });
 
-  const subDirectories = fs
-    .readdirSync(eventPath)
-    .filter((file) => fs.statSync(path.join(eventPath, file)).isDirectory());
 
-  subDirectories.forEach((directory) => {
-    searchEvents(path.join(eventPath, directory));
-  });
-};
-
-searchEvents(path.join(__dirname, "events"));
+loadEvents(path.join(__dirname, 'events'), client)
 
 client.rest.on("rateLimited", console.log)
 

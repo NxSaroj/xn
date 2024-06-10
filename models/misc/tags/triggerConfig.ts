@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const triggerConfig = new Schema({
-    triggerName: [String],
+    triggerName: String,
     triggerContent: String,
     guildId: String,
 })
