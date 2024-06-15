@@ -72,52 +72,51 @@ export default {
       if (isUserMonitored.linkCount >= linkThreshold) {
         switch (linkPunishment) {
           case "Timeout":
-            await message.member.timeout(120_000).catch((err) => {
+            await message.member.timeout(120_000).catch(() => {
               return;
             });
             await antiLinkConfig.deleteMany(
               { userId: message.author.id },
               { guildId: message.author.id }
-            );
+            ).catch(() => {})
   
             break;
           case "Ban":
             await message.member
               .ban({ reason: "Link threshold reached" })
-              .catch((err) => {
+              .catch(() => {
                 return;
               });
             await antiLinkConfig.deleteMany(
               { userId: message.author.id },
               { guildId: message.author.id }
-            );
+            ).catch(() => {})
   
             break;
           case "Kick":
             await message.member
               .kick(`Link Threshold Reached`)
-              .catch((err) => {
+              .catch(() => {
                 return;
               });
             await antiLinkConfig.deleteMany(
               { userId: message.author.id },
               { guildId: message.author.id }
-            );
+            ).catch(() => {})
   
             break;
         }
       } else {
         isUserMonitored.linkCount += 1;
-        await isUserMonitored.save();
+        await isUserMonitored.save().catch(() => {})
       }
   
-      await message.delete().then(async () => {
-        const response = await message.channel.send(replyMessage);
-        await message.author.send(dmMessage);
-        setTimeout(() => {
-          response.delete();
-        }, 1000);
-      });
-    }
+      await message.delete().catch(() => {})
+      const response = await message.channel.send(replyMessage);
+      await message.author.send(dmMessage);
+      setTimeout(() => {
+        response.delete();
+      }, 1000);
   }
+}
 }

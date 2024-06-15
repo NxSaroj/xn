@@ -4,7 +4,7 @@ import censorConfig from "../../../models/moderation/automod/censorConfig";
 export default {
   name: Events.MessageCreate,
   run: async (message: import('discord.js').Message) => {
-    if (!message.guild) return;
+    if (!message.inGuild()) return;
     if (!message.member) return;
     const isCensorConfigured = await censorConfig.findOne({
       guildId: message.guild.id,
@@ -54,7 +54,7 @@ export default {
               await censorConfig.deleteMany({
                 guildId: message.guildId,
                 userId: message.author.id,
-              });
+              }).catch(() => {})
 
               break;
             case "Kick":
@@ -66,7 +66,7 @@ export default {
               await censorConfig.deleteMany({
                 guildId: message.guildId,
                 userId: message.author.id,
-              });
+              }).catch(() => {})
               break;
           }
         } else {

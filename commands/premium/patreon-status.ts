@@ -1,6 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import infoButtons from '../../models/utilities/info-buttons';
 import axios from 'axios'
+import { CommandOptions } from 'commandkit';
 require('dotenv').config()
 
 export const data =  new SlashCommandBuilder()
@@ -30,7 +31,7 @@ export async function run ({ interaction, client }: import('commandkit').SlashCo
             Authorization: `Bearer ${process.env.PATREON_ACCESS_TOKEN}`
         }
         
-    }).then((response) => {
+    }).then((response:any) => {
         console.log(response.data.data.relationships.memberships)
         console.log(typeof response)
     }).catch(err => {
@@ -45,4 +46,8 @@ export async function run ({ interaction, client }: import('commandkit').SlashCo
     console.error(`Error in ${__filename} \n ${e}`)
     return;
    }
+}
+
+export const options:CommandOptions = {
+    devOnly: true
 }

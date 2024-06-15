@@ -1,0 +1,36 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.antiLinksRow = void 0;
+const discord_js_1 = require("discord.js");
+const antiLinkSelectMenu = new discord_js_1.StringSelectMenuBuilder()
+    .setCustomId("anti-link-menu")
+    .setPlaceholder("Configure Anti Link")
+    .addOptions(new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("White List Links")
+    .setDescription("Confgure white-list links for the guild")
+    .setValue("whitelist-links"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Remove WhiteList Liks")
+    .setDescription("Remove whitelist-linkfor the guild")
+    .setValue("remove-whitelist-links"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Disable Anti Link")
+    .setDescription("Disable anti link for the guild")
+    .setValue("disable-select"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("DM Reply")
+    .setDescription("Configure the reply sent in the dm")
+    .setValue("dm-select"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Reply Message")
+    .setDescription("Configure the message sent in the reply")
+    .setValue("reply-select"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Link Threshold")
+    .setDescription("Configure the threshold limit")
+    .setValue("link-threshold"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Ignore Role")
+    .setDescription("Add a ignored role to anti ling")
+    .setValue("link-ignore-role"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Link Punishment")
+    .setDescription("Change the punishment")
+    .setValue("link-punishment"), new discord_js_1.StringSelectMenuOptionBuilder()
+    .setLabel("Back")
+    .setDescription("Back to previous methods")
+    .setValue("link-back"));
+exports.antiLinksRow = new discord_js_1.ActionRowBuilder().addComponents(antiLinkSelectMenu);

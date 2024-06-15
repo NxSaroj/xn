@@ -1,4 +1,4 @@
-import  { Client, GatewayIntentBits } from 'discord.js';
+import  { Client,  GatewayIntentBits } from 'discord.js';
 import  { CommandKit }  from 'commandkit';
 import { loadEvents } from './utilities/handlers/eventHandler'
 import  { connect } from 'mongoose';
@@ -31,7 +31,6 @@ new CommandKit({
   validationsPath: path.join(__dirname, "validations"),
   bulkRegister: true,
 });
-
 
 
 

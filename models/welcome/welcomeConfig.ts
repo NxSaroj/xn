@@ -1,18 +1,20 @@
 import { Schema, model } from 'mongoose'
-const welcomeConfigSchema = new Schema({
-    guildId: String,
+
+const welcomeConfig = new Schema({
+    guildId: {
+        type: String,
+        required: true
+    }, 
     channelId: {
         type: String,
-        unique: true
+        required: true
     },
-    customMessage: {
-        type: Array,
-        default: [],
+    welcomeMessage: {
+        type: String
     },
-    messageContent: {
-        type: String,
-
+    welcomeEmbed: {
+        type: Object
     }
 })
 
-export default  model('welcomeConfig', welcomeConfigSchema)
+export default model('welcomeConfig', welcomeConfig)

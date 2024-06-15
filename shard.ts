@@ -2,8 +2,8 @@ import { ShardingManager } from 'discord.js'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const manager = new ShardingManager('./index.js', {
-    totalShards: 18, 
+const manager = new ShardingManager('./index.ts', {
+    totalShards: 'auto', 
     token: process.env.TOKEN
 })
 
